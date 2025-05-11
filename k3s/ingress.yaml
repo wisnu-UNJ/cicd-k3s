@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: web
+  name: webku
+  labels:
+    name: webku
+spec:
+  rules:
+  - host: pecel-lele.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: webku
+            port: 
+              number: 3000

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: web
+  name: webku
+spec:
+  selector:
+    matchLabels:
+      app: webku
+  template:
+    metadata:
+      labels:
+        app: webku
+    spec:
+      imagePullSecrets: 
+      - name: my-registry
+      containers:
+      - name: webku
+        image: extwisnu/demo-app:node-js-app-1.0
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000

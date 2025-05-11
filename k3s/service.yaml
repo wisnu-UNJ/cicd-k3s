@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: web
+  name: webku
+spec:
+  selector:
+    app: webku
+  ports:
+  - port: 3000
+    targetPort: 3000
