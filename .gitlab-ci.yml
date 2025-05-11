@@ -1,0 +1,37 @@
+variables:
+  KUBE_CONTEXT: root/k3s-connection:k3s-connection
+  IMAGE_NAME: extwisnu/demo-app
+  IMAGE_TAG: kubectl-local
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
+
+stages:
+  - build
+  - deploy
+
+default:
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+
+build_image:
+  stage: build
+  script:
+    - ls
+    - docker info
+    - echo "$GITLAB_PASSWORD" | docker login -u "$GITLAB_USER" --password-stdin
+    - docker build -t "$IMAGE_NAME:$IMAGE_TAG" builds/.
+    - docker push "$IMAGE_NAME:$IMAGE_TAG"
+
+deploy:
+  stage: deploy
+  image:
+    name: extwisnu/demo-app:kubectl-local
+    entrypoint: ['']
+  script:
+    - kubectl config get-contexts
+    - kubectl config use-context  $KUBE_CONTEXT
+    - kubectl get pods
+    - kubectl create namespace web
+    - kubectl create secret docker-registry my-registry --docker-username .... --docker-password .... --docker-server https://index.docker.io/v1/ -n web
+    - kubectl apply -f k3s/
